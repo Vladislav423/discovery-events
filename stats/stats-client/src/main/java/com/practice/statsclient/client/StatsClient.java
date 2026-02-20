@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -35,13 +34,13 @@ public class StatsClient {
         restTemplate.exchange(serverUrl + "/hit", HttpMethod.POST, requestEntity, Object.class);
     }
 
-    public List<ViewStats> getStats(LocalDate start, LocalDateTime end, List<String> uris, Boolean unique) {
+    public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         Map<String, Object> parameters = Map.of(
                 "start", start.format(formatter),
                 "end", end.format(formatter),
-                "uris", uris != null ? String.join("," + uris) : "",
+                "uris", (uris != null && !uris.isEmpty()) ? String.join(",", uris) : "",
                 "unique", unique);
 
         String path = "/stats?start={start}&end={end}&unique={unique}";
@@ -49,7 +48,7 @@ public class StatsClient {
         if (uris != null && !uris.isEmpty()) {
             path += "&uris={uris}";
         }
-        ViewStats[] result = restTemplate.getForObject(path, ViewStats[].class, parameters);
+        ViewStats[] result = restTemplate.getForObject(serverUrl + path, ViewStats[].class, parameters);
 
         return result != null ? List.of(result) : List.of();
     }

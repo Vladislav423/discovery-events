@@ -1,8 +1,12 @@
 package com.practice.mainservice;
 
+import com.practice.statsclient.client.ClientConfig;
+import com.practice.statsclient.client.StatsClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 
+@Import({StatsClient.class, ClientConfig.class})
 @SpringBootApplication
 public class MainServiceApplication {
 
