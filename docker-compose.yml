@@ -12,8 +12,7 @@ services:
     build:
       context: ./stats/stats-server
       dockerfile: Dockerfile
-    container_name:
-      stats-server
+    container_name: stats-server
     ports:
       - "9090:9090"
     depends_on:
@@ -22,3 +21,27 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=Present423
+  main-db:
+    image: postgres:16.4-alpine
+    container_name: main-db
+    environment:
+      - POSTGRES_DB=main-service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Present423
+    ports:
+      - "5433:5432"
+  main-service:
+    build:
+      context: ./main-service
+      dockerfile: Dockerfile
+    container_name: main-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - main-db
+      - stats-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://main-db:5432/main-service
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=Present423
+      - STATS_SERVER_URL=http://stats-server:9090
