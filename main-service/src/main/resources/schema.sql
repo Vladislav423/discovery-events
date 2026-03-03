@@ -1,6 +1,7 @@
 drop table if exists compilations_events;
 drop table if exists requests;
 drop table if exists events;
+drop table if exists users_subscriptions;
 drop table if exists users;
 drop table if exists categories;
 drop table if exists compilations;
@@ -62,4 +63,13 @@ create table compilations_events
     compilation_id bigint not null references compilations (id),
     event_id       bigint not null references events (id),
     primary key (compilation_id, event_id)
+);
+
+create table users_subscriptions
+(
+    id          bigserial primary key,
+    follower_id bigint not null references users (id) on delete cascade,
+    followed_id bigint not null references users (id) on delete cascade,
+    created_on  timestamp without time zone,
+    constraint unique_subscription unique (follower_id, followed_id)
 );

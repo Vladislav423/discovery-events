@@ -73,6 +73,21 @@ public class ErrorHandler {
                 .build();
     }
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handleSubscriptionNotFoundException(SubscriptionNotFoundException ex) {
+        List<String> stackTrace = Arrays.stream(ex.getStackTrace())
+                .map(StackTraceElement::toString)
+                .toList();
+
+        return ApiError.builder()
+                .errors(stackTrace)
+                .message(ex.getMessage())
+                .reason("Subscription not found")
+                .status(HttpStatus.NOT_FOUND.name())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleConflictException(ConflictException ex) {
         List<String> stackTrace = Arrays.stream(ex.getStackTrace())
