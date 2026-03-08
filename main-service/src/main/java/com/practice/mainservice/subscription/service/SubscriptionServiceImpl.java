@@ -99,11 +99,16 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь с id " + userId + " не найден"));
 
         Sort sorting = Sort.unsorted();
-        if ("EVENT_DATE".equalsIgnoreCase(sort)) {
-            sorting = Sort.by(Sort.Direction.ASC, "eventDate");
-        } else if ("VIEWS".equalsIgnoreCase(sort)) {
-            sorting = Sort.by(Sort.Direction.DESC, "views");
+        if (sort != null){
+            if ("EVENT_DATE".equalsIgnoreCase(sort)) {
+                sorting = Sort.by(Sort.Direction.ASC, "eventDate");
+            } else if ("VIEWS".equalsIgnoreCase(sort)) {
+                sorting = Sort.by(Sort.Direction.DESC, "views");
+            } else {
+                throw new ValidationException("Неизвестный тип сортировки");
+            }
         }
+
         Pageable pageable = PageRequest.of(from / size, size, sorting);
 
         Page<Event> events = eventRepository.findEventsFromSubscriptions(userId, EventState.PUBLISHED, pageable);

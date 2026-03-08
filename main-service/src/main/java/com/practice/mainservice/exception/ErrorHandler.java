@@ -98,7 +98,7 @@ public class ErrorHandler {
                 .errors(stackTrace)
                 .message(ex.getMessage())
                 .reason("Conflict exception")
-                .status(HttpStatus.NOT_FOUND.name())
+                .status(HttpStatus.CONFLICT.name())
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -113,7 +113,7 @@ public class ErrorHandler {
                 .errors(stackTrace)
                 .message(ex.getMessage())
                 .reason("Data Integrity Violation Exception")
-                .status(HttpStatus.NOT_FOUND.name())
+                .status(HttpStatus.CONFLICT.name())
                 .timestamp(LocalDateTime.now())
                 .build();
     }
